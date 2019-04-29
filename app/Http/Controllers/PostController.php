@@ -88,4 +88,18 @@ class PostController extends Controller
         $this->postRepository->update($data, $post);
         return redirect()->route('posts.index');
     }
+    
+    /**
+     * Destroy post.
+     *
+     * @param  int $postId Post id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(int $postId)
+    {
+        $post = $this->postRepository->getPostById($postId);
+        $this->postRepository->delete($post);
+        return redirect()->back();
+    }
 }

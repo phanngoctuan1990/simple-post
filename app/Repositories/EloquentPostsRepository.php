@@ -62,4 +62,16 @@ class EloquentPostsRepository implements PostsRepository
     {
         $post->update($params);
     }
+
+    /**
+     * delete post
+     * 
+     * @param Post $post   Post
+     * 
+     * @return void
+     */
+    public function delete(Post $post): void
+    {
+        $post->delete();
+    }
 }

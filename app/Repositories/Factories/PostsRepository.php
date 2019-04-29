@@ -23,7 +23,7 @@ interface PostsRepository
      * 
      * @return Post
      */
-    public function getPostById(int $PostId, array $select = ['*']): Post;
+    public function getPostById(int $PostId, array $select = ['*']);
     
     /**
      * Create post
@@ -43,4 +43,13 @@ interface PostsRepository
      * @return void
      */
     public function update(array $params, Post $post): void;
+    
+    /**
+     * delete post
+     * 
+     * @param Post $post   Post
+     * 
+     * @return void
+     */
+    public function delete(Post $post): void;
 }
