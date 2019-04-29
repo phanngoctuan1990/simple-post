@@ -5,17 +5,18 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Form Create Post</div>
+                <div class="card-header">Form Edit Post</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('posts.update', $post['id']) }}" enctype="multipart/form-data">
+                        @method('PATCH')
                         @csrf
 
                         <div class="form-group row">
                             <label for="title" class="col-md-4 col-form-label text-md-right">Post title</label>
 
                             <div class="col-md-6">
-                                <input id="title" type="text" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" value="{{ old('title') }}" autofocus>
+                                <input id="title" type="text" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" name="title" value="{{ $post['title'] }}" autofocus>
 
                                 @if ($errors->has('title'))
                                     <span class="invalid-feedback" role="alert">
@@ -29,7 +30,7 @@
                             <label for="description" class="col-md-4 col-form-label text-md-right">Post description</label>
 
                             <div class="col-md-6">
-                                <textarea id="description" type="text" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="description"></textarea>
+                                <textarea id="description" type="text" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="description">{{ $post['description'] }}</textarea>
 
                                 @if ($errors->has('description'))
                                     <span class="invalid-feedback" role="alert">
@@ -43,13 +44,14 @@
                             <label for="image" class="col-md-4 col-form-label text-md-right">Post image</label>
 
                             <div class="col-md-6">
+                                <img class="card-img-top" src="{{ $post['post_image'] }}" alt="{{ $post['post_image'] }}">
                                 <input type="file" class="form-control-file" id="image" name="image">
                             </div>
                         </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">Create Post</button>
+                                <button type="submit" class="btn btn-primary">Edit Post</button>
                             </div>
                         </div>
                     </form>

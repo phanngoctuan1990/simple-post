@@ -20,20 +20,15 @@ class Post extends Model
     protected $fillable = ['user_id', 'title', 'description', 'image'];
 
     /**
-     * Get image
+     * Get post image
      * 
      * @return string
      */
-    public function getImageAttribute($image)
+    public function getPostImageAttribute($image)
     {
-        if (strpos($image, 'dummyimage') !== false || $image == null) {
-            return self::IMAGE_DEFAULT;
+        if ($this->image) {
+            return Storage::disk('s3')->url('post-image/' . $this->image);
         }
-
-        if (strpos($image, 's3.amazonaws.com') !== false) {
-            return $image;
-        }
-
-        return Storage::disk('s3')->url('post-image/' . $image);
+        return self::IMAGE_DEFAULT;
     }
 }

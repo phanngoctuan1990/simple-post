@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Storage;
 use Illuminate\Http\Request;
+use App\Services\ImageService;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Repositories\Factories\PostsRepository;
 
 class PostController extends Controller
@@ -55,14 +56,36 @@ class PostController extends Controller
     public function store(CreatePostRequest $request)
     {
         $data = $request->all();
-        if ($request->hasFile('image')) {
-            $name = time() . '.' . $request->image->getClientOriginalExtension();
-            $image = $request->image;
-            $path = Storage::disk('s3')->put('post-image/' . $name, file_get_contents($image), 'public');
-            $data['image'] = $name;
-        }
+        $data['image'] = app(ImageService::class)->upload($request);
         $data['user_id'] = auth()->user()->id;
         $post = $this->postRepository->create($data);
-        return redirect()->route('post.index');
+        return redirect()->route('posts.index');
+    }
+
+    /**
+     * Show the form for update post.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(int $postId)
+    {
+        $post = $this->postRepository->getPostById($postId);
+        return view('post.edit', compact('post'));
+    }
+
+    /**
+     * Update post.
+     *
+     * @param  CreatePostRequest  $request request
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function update(UpdatePostRequest $request, int $postId)
+    {
+        $post = $this->postRepository->getPostById($postId);
+        $data = $request->only(['title', 'description']);
+        $data['image'] = app(ImageService::class)->upload($request, $post);
+        $this->postRepository->update($data, $post);
+        return redirect()->route('posts.index');
     }
 }

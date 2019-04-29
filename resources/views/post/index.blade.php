@@ -17,13 +17,14 @@
             @foreach($posts as $post)
             <div class="card-deck">
                 <div class="card">
-                    <img class="card-img-top" src="{{ $post['image'] }}" alt="Card image cap">
+                    <img class="card-img-top" src="{{ $post['post_image'] }}" alt="{{ $post['post_image'] }}">
                     <div class="card-body">
                         <h5 class="card-title">{{ $post['title'] }}</h5>
                         <p class="card-text">{{ $post['description'] }}</p>
                     </div>
-                    <div class="card-footer">
-                        <small class="text-muted">{{ $post['created_at'] }}</small>
+                    <div class="card-footer text-center">
+                        <small class="text-muted float-left">{{ $post['created_at'] }}</small>
+                        <a href="{{ route('posts.edit', $post['id']) }}" class="btn btn-primary float-right">Edit post</a>
                     </div>
                 </div>
             </div>
