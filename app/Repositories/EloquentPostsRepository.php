@@ -36,4 +36,30 @@ class EloquentPostsRepository implements PostsRepository
     {
         return Post::create($params);
     }
+    
+    /**
+     * Get post by id
+     * 
+     * @param int   $PostId Post id
+     * @param array $select Select column
+     * 
+     * @return Post
+     */
+    public function getPostById(int $PostId, array $select = ['*']): Post
+    {
+        return Post::whereUserId(auth()->user()->id)->findOrFail($PostId, $select);
+    }
+
+    /**
+     * Update post
+     * 
+     * @param array $params Post params
+     * @param Post  $post   Post
+     * 
+     * @return void
+     */
+    public function update(array $params, Post $post): void
+    {
+        $post->update($params);
+    }
 }

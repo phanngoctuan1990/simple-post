@@ -52,21 +52,6 @@ class ElasticsearchPostsRepository implements PostsRepository
                 "query" => $query,
                 "from" => 0,
                 "size" => 1000
-                // 'query' => [
-                //     'bool' => [
-                //         'must' => [
-                //             [
-                //                 'match' => ['user_id' => $userId]
-                //             ],
-                //             [
-                //                 'multi_match' => [
-                //                     'fields' => ['title', 'description'],
-                //                     'query' => $query,
-                //                 ]
-                //             ]
-                //         ]
-                //     ]
-                // ]
             ],
         ]);
         return $posts;
@@ -103,5 +88,61 @@ class ElasticsearchPostsRepository implements PostsRepository
     public function create(array $params): Post
     {
         return Post::create($params);
+    }
+
+    /**
+     * Get post by id
+     * 
+     * @param int   $postId Post id
+     * @param array $select Select column
+     * 
+     * @return Post
+     */
+    public function getPostById(int $postId, array $select = ['*']): Post
+    {
+        $post = new Post;
+        $userId = auth()->user()->id;
+        $post = $this->search->search([
+            'index' => $post->getSearchIndex(),
+            'type' => $post->getSearchType(),
+            'body' => [
+                "query" => [
+                    "bool" => [
+                        "must" => [
+                            [
+                                "match_phrase" => [
+                                    "id" => [
+                                        "query" => $postId,
+                                    ]
+                                ]
+                            ],
+                            [
+                                "match_phrase" => [
+                                    "user_id" => [
+                                        "query" => $userId,
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                "from" => 0,
+                "size" => 1,
+            ],
+        ]);
+        return $this->buildCollection($post)->first();
+    }
+
+    /**
+     * Update post
+     * 
+     * @param array $params Post params
+     * @param Post  $post   Post
+     * 
+     * @return void
+     */
+    public function update(array $params, Post $post): void
+    {
+        $post->update($params);
     }
 }

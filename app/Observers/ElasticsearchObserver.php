@@ -2,8 +2,6 @@
 
 namespace App\Observers;
 
-use Storage;
-use App\Post;
 use Elasticsearch\Client;
 
 class ElasticsearchObserver
@@ -34,7 +32,6 @@ class ElasticsearchObserver
      */
     public function saved($model)
     {
-        $model->image = $model->image;
         $this->elasticsearch->index([
             'id' => $model->id,
             'body' => $model->toSearchArray(),
