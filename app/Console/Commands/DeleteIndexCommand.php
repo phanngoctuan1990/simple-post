@@ -48,11 +48,13 @@ class DeleteIndexCommand extends Command
         foreach(Post::cursor() as $post) {
             $search = app(ElasticsearchPostsRepository::class)->getPostById($post->id);
             if ($search) {
-                $this->search->delete([
+                $this->search->delete(
+                    [
                     'id' => $post->id,
                     'type' => $post->getSearchType(),
                     'index' => $post->getSearchIndex(),
-                ]);
+                    ]
+                );
                 $this->output->write('.');
             }
         }

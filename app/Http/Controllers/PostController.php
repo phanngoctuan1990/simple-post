@@ -17,7 +17,7 @@ class PostController extends Controller
 
     /**
      * Construct PostController
-     * 
+     *
      * @param PostsRepository $postRepository Post repository
      */
     public function __construct(PostsRepository $postRepository)
@@ -50,7 +50,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreatePostRequest $request)
@@ -76,8 +76,8 @@ class PostController extends Controller
     /**
      * Update post.
      *
-     * @param  CreatePostRequest  $request request
-     * 
+     * @param CreatePostRequest $request request
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatePostRequest $request, int $postId)
@@ -92,8 +92,8 @@ class PostController extends Controller
     /**
      * Destroy post.
      *
-     * @param  int $postId Post id
-     * 
+     * @param int $postId Post id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $postId)

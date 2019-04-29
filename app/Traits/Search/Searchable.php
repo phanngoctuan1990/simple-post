@@ -20,7 +20,7 @@ trait Searchable
 
     /**
      * Get search index
-     * 
+     *
      * @return string
      */
     public function getSearchIndex()
@@ -30,7 +30,7 @@ trait Searchable
 
     /**
      * Get search type
-     * 
+     *
      * @return string
      */
     public function getSearchType()
@@ -43,7 +43,7 @@ trait Searchable
 
     /**
      * Convert model to array
-     * 
+     *
      * @return array
      */
     public function toSearchArray()

@@ -45,7 +45,8 @@ class ElasticsearchPostsRepository implements PostsRepository
                 ]
             ];
         }
-        $posts = $this->search->search([
+        $posts = $this->search->search(
+            [
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
@@ -53,7 +54,8 @@ class ElasticsearchPostsRepository implements PostsRepository
                 'from' => 0,
                 'size' => 1000
             ],
-        ]);
+            ]
+        );
         return $posts;
     }
 
@@ -80,9 +82,9 @@ class ElasticsearchPostsRepository implements PostsRepository
 
     /**
      * Create a post
-     * 
+     *
      * @param array $params Post params
-     * 
+     *
      * @return Post
      */
     public function create(array $params): Post
@@ -92,10 +94,10 @@ class ElasticsearchPostsRepository implements PostsRepository
 
     /**
      * Get post by id
-     * 
+     *
      * @param int   $postId Post id
      * @param array $select Select column
-     * 
+     *
      * @return Post|null
      */
     public function getPostById(int $postId, array $select = ['*'])
@@ -106,7 +108,8 @@ class ElasticsearchPostsRepository implements PostsRepository
             $query['bool']['must'][] = ['match_phrase' => ['user_id' =>  auth()->user()->id]];
         }
         $query['bool']['must'][] = ['match_phrase' => ['id' => $postId]];
-        $post = $this->search->search([
+        $post = $this->search->search(
+            [
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
@@ -114,16 +117,17 @@ class ElasticsearchPostsRepository implements PostsRepository
                 'from' => 0,
                 'size' => 1,
             ],
-        ]);
+            ]
+        );
         return $this->buildCollection($post)->first();
     }
 
     /**
      * Update post
-     * 
+     *
      * @param array $params Post params
      * @param Post  $post   Post
-     * 
+     *
      * @return void
      */
     public function update(array $params, Post $post): void
@@ -133,9 +137,9 @@ class ElasticsearchPostsRepository implements PostsRepository
 
     /**
      * delete post
-     * 
-     * @param Post $post   Post
-     * 
+     *
+     * @param Post $post Post
+     *
      * @return void
      */
     public function delete(Post $post): void

@@ -21,7 +21,7 @@ class Post extends Model
 
     /**
      * Get post image
-     * 
+     *
      * @return string
      */
     public function getPostImageAttribute($image)
