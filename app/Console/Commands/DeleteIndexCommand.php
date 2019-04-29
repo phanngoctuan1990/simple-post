@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Post;
 use Elasticsearch\Client;
 use Illuminate\Console\Command;
+use App\Repositories\ElasticsearchPostsRepository;
 
 class DeleteIndexCommand extends Command
 {
@@ -45,13 +46,15 @@ class DeleteIndexCommand extends Command
         $this->info('Remove indexing all posts. Might take a while...');
 
         foreach(Post::cursor() as $post) {
-            $this->search->delete([
-                'id' => $post->id,
-                'type' => $post->getSearchType(),
-                'index' => $post->getSearchIndex(),
-            ]);
-
-            $this->output->write('.');
+            $search = app(ElasticsearchPostsRepository::class)->getPostById($post->id);
+            if ($search) {
+                $this->search->delete([
+                    'id' => $post->id,
+                    'type' => $post->getSearchType(),
+                    'index' => $post->getSearchIndex(),
+                ]);
+                $this->output->write('.');
+            }
         }
 
         $this->info('Done!');

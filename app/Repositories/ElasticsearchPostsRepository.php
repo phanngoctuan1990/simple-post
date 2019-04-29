@@ -28,18 +28,18 @@ class ElasticsearchPostsRepository implements PostsRepository
         $userId = auth()->user()->id;
         $query['bool']['must'] = [
             [
-                "match_phrase" => ["user_id" =>  $userId]
+                'match_phrase' => ['user_id' =>  $userId]
             ]
         ];
         if ($search) {
             $query['bool']['must'][] = [
-                "bool" => [
-                    "should" => [
+                'bool' => [
+                    'should' => [
                         [
-                            "match_phrase" => ["title" => $search]
+                            'match_phrase' => ['title' => $search]
                         ],
                         [
-                            "match_phrase" => ["description" => $search]
+                            'match_phrase' => ['description' => $search]
                         ]
                     ]
                 ]
@@ -49,9 +49,9 @@ class ElasticsearchPostsRepository implements PostsRepository
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
-                "query" => $query,
-                "from" => 0,
-                "size" => 1000
+                'query' => $query,
+                'from' => 0,
+                'size' => 1000
             ],
         ]);
         return $posts;
@@ -96,38 +96,23 @@ class ElasticsearchPostsRepository implements PostsRepository
      * @param int   $postId Post id
      * @param array $select Select column
      * 
-     * @return Post
+     * @return Post|null
      */
-    public function getPostById(int $postId, array $select = ['*']): Post
+    public function getPostById(int $postId, array $select = ['*'])
     {
         $post = new Post;
-        $userId = auth()->user()->id;
+        $query['bool']['must'] = [];
+        if (auth()->check()) {
+            $query['bool']['must'][] = ['match_phrase' => ['user_id' =>  auth()->user()->id]];
+        }
+        $query['bool']['must'][] = ['match_phrase' => ['id' => $postId]];
         $post = $this->search->search([
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
-                "query" => [
-                    "bool" => [
-                        "must" => [
-                            [
-                                "match_phrase" => [
-                                    "id" => [
-                                        "query" => $postId,
-                                    ]
-                                ]
-                            ],
-                            [
-                                "match_phrase" => [
-                                    "user_id" => [
-                                        "query" => $userId,
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                "from" => 0,
-                "size" => 1,
+                'query' => $query,
+                'from' => 0,
+                'size' => 1,
             ],
         ]);
         return $this->buildCollection($post)->first();
@@ -144,5 +129,17 @@ class ElasticsearchPostsRepository implements PostsRepository
     public function update(array $params, Post $post): void
     {
         $post->update($params);
+    }
+
+    /**
+     * delete post
+     * 
+     * @param Post $post   Post
+     * 
+     * @return void
+     */
+    public function delete(Post $post): void
+    {
+        $post->delete();
     }
 }

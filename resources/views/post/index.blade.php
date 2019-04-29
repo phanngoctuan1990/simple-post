@@ -4,14 +4,12 @@
 <div class="container">
     <div class="row justify-content-center">
         <form method="get">
-        <div class="input-group">
-
-          <input name="search" value="{{ old('search') }}" type="text" class="form-control" placeholder="Search for...">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">Go!</button>
-          </span>
-
-        </div><!-- /input-group -->
+            <div class="input-group">
+                <input name="search" value="{{ old('search') }}" type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Go!</button>
+                </span>
+            </div>
         </form>
         <div class="col-md-8">
             @foreach($posts as $post)
@@ -24,6 +22,11 @@
                     </div>
                     <div class="card-footer text-center">
                         <small class="text-muted float-left">{{ $post['created_at'] }}</small>
+                        <form method="POST" action="{{ route('posts.destroy', $post['id']) }}">
+                            @csrf()
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger float-right">Delete post</button>
+                        </form>
                         <a href="{{ route('posts.edit', $post['id']) }}" class="btn btn-primary float-right">Edit post</a>
                     </div>
                 </div>
