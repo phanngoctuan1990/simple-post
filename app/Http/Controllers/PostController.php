@@ -58,7 +58,7 @@ class PostController extends Controller
         $data = $request->all();
         $data['image'] = app(ImageService::class)->upload($request);
         $data['user_id'] = auth()->user()->id;
-        $post = $this->postRepository->create($data);
+        $this->postRepository->create($data);
         return redirect()->route('posts.index');
     }
 

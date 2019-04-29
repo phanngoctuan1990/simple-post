@@ -40,7 +40,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             Client::class,
-            function ($app) {
+            function () {
                 return ClientBuilder::create()
                     ->setHosts(config('services.search.hosts'))
                     ->setRetries(config('services.search.retries'))

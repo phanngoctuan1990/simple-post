@@ -18,12 +18,12 @@ interface PostsRepository
     /**
      * Get post by id
      *
-     * @param int   $PostId Post id
+     * @param int   $postId Post id
      * @param array $select Select column
      *
      * @return Post
      */
-    public function getPostById(int $PostId, array $select = ['*']);
+    public function getPostById(int $postId, array $select = ['*']);
     
     /**
      * Create post

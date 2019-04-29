@@ -24,7 +24,7 @@ class Post extends Model
      *
      * @return string
      */
-    public function getPostImageAttribute($image)
+    public function getPostImageAttribute()
     {
         if ($this->image) {
             return Storage::disk('s3')->url('post-image/' . $this->image);

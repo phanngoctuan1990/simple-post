@@ -42,14 +42,14 @@ class EloquentPostsRepository implements PostsRepository
     /**
      * Get post by id
      *
-     * @param int   $PostId Post id
+     * @param int   $postId Post id
      * @param array $select Select column
      *
      * @return Post
      */
-    public function getPostById(int $PostId, array $select = ['*']): Post
+    public function getPostById(int $postId, array $select = ['*']): Post
     {
-        return Post::whereUserId(auth()->user()->id)->findOrFail($PostId, $select);
+        return Post::whereUserId(auth()->user()->id)->findOrFail($postId, $select);
     }
 
     /**
