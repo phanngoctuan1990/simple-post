@@ -5,42 +5,72 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/repo
+
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.3-stretch-node-browsers
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # Using the RAM variation mitigates I/O contention
       # for database intensive operations.
-      # - image: circleci/mysql:5.7-ram
-      # 
-      # - image: redis:3
+      - image: circleci/mysql:5.7
+        environment:
+          - MYSQL_DATABASE=circle_test
+          - MYSQL_ALLOW_EMPTY_PASSWORD=true
+
+      # for elasticsearch.
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+        environment:
+          - cluster.name: elasticsearch
+          - transport.host: localhost
+          - network.host: 127.0.0.1
+          - http.port: 9200
 
     steps:
       - checkout
 
-      - run: sudo apt update && sudo apt install zlib1g-dev
-      - run: sudo docker-php-ext-install zip
+      - run:
+          name: Setup php extentions
+          command: |
+            sudo apt update && sudo apt install zlib1g-dev
+            sudo docker-php-ext-install zip
+            sudo docker-php-ext-install pdo_mysql
+      
+      - run: cp .env.example .env
 
-      # composer cache
+      # setup composer
       - restore_cache:
           keys:
-          # "composer.lock" can be used if it is committed to the repo
           - v1-dependencies-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run: cp .env.example .env
       - run: composer install -n --prefer-dist
-
       - save_cache:
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
 
+      - run:
+          name: Display versions
+          command: |
+            php -v
+            composer --version
+      
+      - run:
+          name: Setup Environment
+          command: |
+            php artisan key:generate
+            chmod -R 777 storage
+
+      - run:
+          name: Setup Database
+          command: |
+            php artisan migrate
+      
       # run tests with phpunit or codecept
-      #- run: ./vendor/bin/phpunit
+      - run: ./vendor/bin/phpunit
+
       # check convention code with phpcs and phpmd
-      - run: ./vendor/bin/phpcs
-      - run: ./vendor/bin/phpmd app text phpmd.xml
+      - run:
+          name: Check convention code by phpcs and phpmd
+          command: |
+            ./vendor/bin/phpcs --standard=phpcs.xml
+            ./vendor/bin/phpmd app text phpmd.xml
