@@ -36,6 +36,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->bindSearchClient();
     }
 
+    /**
+     * Bin search client
+     *
+     * @return void
+     */
     private function bindSearchClient()
     {
         $this->app->bind(

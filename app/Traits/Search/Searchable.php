@@ -7,6 +7,8 @@ trait Searchable
 {
     /**
      * Boot search able
+     *
+     * @return void
      */
     public static function bootSearchable()
     {

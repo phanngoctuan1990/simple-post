@@ -7,7 +7,7 @@ use Elasticsearch\Client;
 class ElasticsearchObserver
 {
     /**
-     * var $elasticsearch
+     * Var $elasticsearch
      */
     private $elasticsearch;
 

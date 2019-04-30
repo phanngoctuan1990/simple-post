@@ -45,7 +45,7 @@ interface PostsRepository
     public function update(array $params, Post $post): void;
     
     /**
-     * delete post
+     * Delete post
      *
      * @param Post $post Post
      *

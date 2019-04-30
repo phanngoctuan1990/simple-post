@@ -27,6 +27,8 @@ class ReindexCommand extends Command
     /**
      * Create a new command instance.
      *
+     * @param Client $search Search
+     *
      * @return void
      */
     public function __construct(Client $search)

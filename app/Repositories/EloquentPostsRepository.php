@@ -66,7 +66,7 @@ class EloquentPostsRepository implements PostsRepository
     }
 
     /**
-     * delete post
+     * Delete post
      *
      * @param Post $post Post
      *

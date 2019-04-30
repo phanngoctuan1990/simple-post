@@ -10,11 +10,25 @@ class ElasticsearchPostsRepository implements PostsRepository
 {
     private $search;
 
+    /**
+     * Construct ElasticsearchPostsRepository
+     *
+     * @param Client $client Client
+     *
+     * @return void
+     */
     public function __construct(Client $client)
     {
         $this->search = $client;
     }
 
+    /**
+     * Search post
+     *
+     * @param string $search Search
+     *
+     * @return Collection
+     */
     public function search(string $search = ''): Collection
     {
         $posts = $this->searchOnElasticsearch($search);
@@ -22,6 +36,13 @@ class ElasticsearchPostsRepository implements PostsRepository
         return $this->buildCollection($posts);
     }
 
+    /**
+     * Search on elastic search
+     *
+     * @param string $search Search
+     *
+     * @return array
+     */
     public function searchOnElasticsearch(string $search): array
     {
         $post = new Post;
@@ -59,6 +80,13 @@ class ElasticsearchPostsRepository implements PostsRepository
         return $posts;
     }
 
+    /**
+     * Build collection
+     *
+     * @param array $posts Post
+     *
+     * @return Collection
+     */
     private function buildCollection(array $posts): Collection
     {
         /**
@@ -136,7 +164,7 @@ class ElasticsearchPostsRepository implements PostsRepository
     }
 
     /**
-     * delete post
+     * Delete post
      *
      * @param Post $post Post
      *

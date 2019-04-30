@@ -5,6 +5,14 @@ use Storage;
 
 class ImageService
 {
+    /**
+     * Upload image
+     *
+     * @param Request $request Request
+     * @param Post    $post    Post
+     *
+     * @return string|null
+     */
     public function upload($request, $post = null)
     {
         $name = null;
