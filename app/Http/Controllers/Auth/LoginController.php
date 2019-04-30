@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+use App\Notifications\Authenticated;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -25,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/post';
+    protected $redirectTo = '/posts';
 
     /**
      * Create a new controller instance.
@@ -35,5 +37,22 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param Request $request Request
+     * @param mixed   $user    User
+     *
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        $request = $request;
+        \Notification::send($user, new Authenticated());
+        // \Notification::route('mail', 'datamini01@gmail.com')
+        //     ->route('nexmo', '5555555555')
+        //     ->notify(new Authenticated());
     }
 }

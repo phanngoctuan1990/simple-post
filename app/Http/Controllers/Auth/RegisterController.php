@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\RegisteredUser;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -68,12 +70,24 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create(
-            [
+        return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            ]
-        );
+        ]);
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param Request $request Request
+     * @param mixed   $user    User
+     *
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        $request = $request;
+        $user->notify(new RegisteredUser());
     }
 }
