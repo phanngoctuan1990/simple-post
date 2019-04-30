@@ -24,8 +24,6 @@ jobs:
       - run: sudo apt update && sudo apt install zlib1g-dev
       - run: sudo docker-php-ext-install zip
 
-      # Download and cache dependencies
-
       # composer cache
       - restore_cache:
           keys:
@@ -42,7 +40,7 @@ jobs:
             - vendor
 
       # run tests with phpunit or codecept
-      - run: ./vendor/bin/phpunit
+      #- run: ./vendor/bin/phpunit
       # check convention code with phpcs and phpmd
       - run: ./vendor/bin/phpcs
       - run: ./vendor/bin/phpmd app text phpmd.xml
