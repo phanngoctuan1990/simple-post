@@ -5,6 +5,14 @@ use Storage;
 
 class ImageService
 {
+    /**
+     * Upload image
+     *
+     * @param Request $request Request
+     * @param Post    $post    Post
+     *
+     * @return string|null
+     */
     public function upload($request, $post = null)
     {
         $name = null;
@@ -14,7 +22,7 @@ class ImageService
             }
             $name = time() . '.' . $request->image->getClientOriginalExtension();
             $image = $request->image;
-            $path = Storage::disk('s3')->put('post-image/' . $name, file_get_contents($image), 'public');
+            Storage::disk('s3')->put('post-image/' . $name, file_get_contents($image), 'public');
         } elseif ($post) {
             return $post->image;
         }

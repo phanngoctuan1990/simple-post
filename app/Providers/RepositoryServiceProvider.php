@@ -18,30 +18,41 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(PostsRepository::class, function($app) {
-            // This is useful in case we want to turn-off our
-            // search cluster or when deploying the search
-            // to a live, running application at first.
-            if (config('services.search.enabled')) {
-                return new ElasticsearchPostsRepository(
-                    $app->make(Client::class)
-                );
+        $this->app->singleton(
+            PostsRepository::class,
+            function ($app) {
+                // This is useful in case we want to turn-off our
+                // search cluster or when deploying the search
+                // to a live, running application at first.
+                if (config('services.search.enabled')) {
+                    return new ElasticsearchPostsRepository(
+                        $app->make(Client::class)
+                    );
+                }
+                return new EloquentPostsRepository;
             }
-            return new EloquentPostsRepository;
-        });
+        );
 
         $this->bindSearchClient();
     }
 
+    /**
+     * Bin search client
+     *
+     * @return void
+     */
     private function bindSearchClient()
     {
-        $this->app->bind(Client::class, function($app) {
-            return ClientBuilder::create()
-                ->setHosts(config('services.search.hosts'))
-                ->setRetries(config('services.search.retries'))
-                ->setLogger(ClientBuilder::defaultLogger(storage_path('logs/elastic.log')))
-                ->build();
-        });
+        $this->app->bind(
+            Client::class,
+            function () {
+                return ClientBuilder::create()
+                    ->setHosts(config('services.search.hosts'))
+                    ->setRetries(config('services.search.retries'))
+                    ->setLogger(ClientBuilder::defaultLogger(storage_path('logs/elastic.log')))
+                    ->build();
+            }
+        );
     }
 
     /**

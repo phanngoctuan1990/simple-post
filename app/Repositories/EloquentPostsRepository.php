@@ -9,27 +9,29 @@ class EloquentPostsRepository implements PostsRepository
 {
     /**
      * Search post by user id
-     * 
+     *
      * @param string $query Query need to search
-     * 
+     *
      * @return Collection
      */
     public function search(String $query = ''): Collection
     {
         $userId = auth()->user()->id;
         return Post::where('user_id', $userId)
-            ->where(function($q) use($query) {
-                $q->where('title', 'like', "%{$query}%")
-                    ->orWhere('description', 'like', "%{$query}%");
-            })
+            ->where(
+                function ($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%");
+                }
+            )
             ->get();
     }
 
     /**
      * Create a post
-     * 
+     *
      * @param array $params Post params
-     * 
+     *
      * @return Post
      */
     public function create(array $params): Post
@@ -39,23 +41,23 @@ class EloquentPostsRepository implements PostsRepository
     
     /**
      * Get post by id
-     * 
-     * @param int   $PostId Post id
+     *
+     * @param int   $postId Post id
      * @param array $select Select column
-     * 
+     *
      * @return Post
      */
-    public function getPostById(int $PostId, array $select = ['*']): Post
+    public function getPostById(int $postId, array $select = ['*']): Post
     {
-        return Post::whereUserId(auth()->user()->id)->findOrFail($PostId, $select);
+        return Post::whereUserId(auth()->user()->id)->findOrFail($postId, $select);
     }
 
     /**
      * Update post
-     * 
+     *
      * @param array $params Post params
      * @param Post  $post   Post
-     * 
+     *
      * @return void
      */
     public function update(array $params, Post $post): void
@@ -64,10 +66,10 @@ class EloquentPostsRepository implements PostsRepository
     }
 
     /**
-     * delete post
-     * 
-     * @param Post $post   Post
-     * 
+     * Delete post
+     *
+     * @param Post $post Post
+     *
      * @return void
      */
     public function delete(Post $post): void

@@ -27,6 +27,8 @@ class ReindexCommand extends Command
     /**
      * Create a new command instance.
      *
+     * @param Client $search Search
+     *
      * @return void
      */
     public function __construct(Client $search)
@@ -44,13 +46,15 @@ class ReindexCommand extends Command
     {
         $this->info('Indexing all posts. Might take a while...');
 
-        foreach(Post::cursor() as $post) {
-            $this->search->index([
+        foreach (Post::cursor() as $post) {
+            $this->search->index(
+                [
                 'id' => $post->id,
                 'body' => $post->toSearchArray(),
                 'type' => $post->getSearchType(),
                 'index' => $post->getSearchIndex(),
-            ]);
+                ]
+            );
 
             $this->output->write('.');
         }

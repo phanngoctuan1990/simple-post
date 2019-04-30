@@ -10,11 +10,25 @@ class ElasticsearchPostsRepository implements PostsRepository
 {
     private $search;
 
+    /**
+     * Construct ElasticsearchPostsRepository
+     *
+     * @param Client $client Client
+     *
+     * @return void
+     */
     public function __construct(Client $client)
     {
         $this->search = $client;
     }
 
+    /**
+     * Search post
+     *
+     * @param string $search Search
+     *
+     * @return Collection
+     */
     public function search(string $search = ''): Collection
     {
         $posts = $this->searchOnElasticsearch($search);
@@ -22,6 +36,13 @@ class ElasticsearchPostsRepository implements PostsRepository
         return $this->buildCollection($posts);
     }
 
+    /**
+     * Search on elastic search
+     *
+     * @param string $search Search
+     *
+     * @return array
+     */
     public function searchOnElasticsearch(string $search): array
     {
         $post = new Post;
@@ -45,7 +66,8 @@ class ElasticsearchPostsRepository implements PostsRepository
                 ]
             ];
         }
-        $posts = $this->search->search([
+        $posts = $this->search->search(
+            [
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
@@ -53,10 +75,18 @@ class ElasticsearchPostsRepository implements PostsRepository
                 'from' => 0,
                 'size' => 1000
             ],
-        ]);
+            ]
+        );
         return $posts;
     }
 
+    /**
+     * Build collection
+     *
+     * @param array $posts Post
+     *
+     * @return Collection
+     */
     private function buildCollection(array $posts): Collection
     {
         /**
@@ -80,9 +110,9 @@ class ElasticsearchPostsRepository implements PostsRepository
 
     /**
      * Create a post
-     * 
+     *
      * @param array $params Post params
-     * 
+     *
      * @return Post
      */
     public function create(array $params): Post
@@ -92,10 +122,10 @@ class ElasticsearchPostsRepository implements PostsRepository
 
     /**
      * Get post by id
-     * 
+     *
      * @param int   $postId Post id
      * @param array $select Select column
-     * 
+     *
      * @return Post|null
      */
     public function getPostById(int $postId, array $select = ['*'])
@@ -106,7 +136,8 @@ class ElasticsearchPostsRepository implements PostsRepository
             $query['bool']['must'][] = ['match_phrase' => ['user_id' =>  auth()->user()->id]];
         }
         $query['bool']['must'][] = ['match_phrase' => ['id' => $postId]];
-        $post = $this->search->search([
+        $post = $this->search->search(
+            [
             'index' => $post->getSearchIndex(),
             'type' => $post->getSearchType(),
             'body' => [
@@ -114,16 +145,17 @@ class ElasticsearchPostsRepository implements PostsRepository
                 'from' => 0,
                 'size' => 1,
             ],
-        ]);
+            ]
+        );
         return $this->buildCollection($post)->first();
     }
 
     /**
      * Update post
-     * 
+     *
      * @param array $params Post params
      * @param Post  $post   Post
-     * 
+     *
      * @return void
      */
     public function update(array $params, Post $post): void
@@ -132,10 +164,10 @@ class ElasticsearchPostsRepository implements PostsRepository
     }
 
     /**
-     * delete post
-     * 
-     * @param Post $post   Post
-     * 
+     * Delete post
+     *
+     * @param Post $post Post
+     *
      * @return void
      */
     public function delete(Post $post): void

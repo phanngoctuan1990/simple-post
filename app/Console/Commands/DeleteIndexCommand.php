@@ -28,6 +28,8 @@ class DeleteIndexCommand extends Command
     /**
      * Create a new command instance.
      *
+     * @param Client $search Search
+     *
      * @return void
      */
     public function __construct(Client $search)
@@ -45,14 +47,16 @@ class DeleteIndexCommand extends Command
     {
         $this->info('Remove indexing all posts. Might take a while...');
 
-        foreach(Post::cursor() as $post) {
+        foreach (Post::cursor() as $post) {
             $search = app(ElasticsearchPostsRepository::class)->getPostById($post->id);
             if ($search) {
-                $this->search->delete([
+                $this->search->delete(
+                    [
                     'id' => $post->id,
                     'type' => $post->getSearchType(),
                     'index' => $post->getSearchIndex(),
-                ]);
+                    ]
+                );
                 $this->output->write('.');
             }
         }

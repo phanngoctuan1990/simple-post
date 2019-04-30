@@ -11,13 +11,13 @@ use App\Repositories\Factories\PostsRepository;
 class PostController extends Controller
 {
     /**
-     * var $postRepository
+     * Var $postRepository
      */
     private $postRepository;
 
     /**
      * Construct PostController
-     * 
+     *
      * @param PostsRepository $postRepository Post repository
      */
     public function __construct(PostsRepository $postRepository)
@@ -27,6 +27,8 @@ class PostController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request Request
      *
      * @return \Illuminate\Http\Response
      */
@@ -50,7 +52,8 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param CreatePostRequest $request Request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(CreatePostRequest $request)
@@ -58,12 +61,14 @@ class PostController extends Controller
         $data = $request->all();
         $data['image'] = app(ImageService::class)->upload($request);
         $data['user_id'] = auth()->user()->id;
-        $post = $this->postRepository->create($data);
+        $this->postRepository->create($data);
         return redirect()->route('posts.index');
     }
 
     /**
      * Show the form for update post.
+     *
+     * @param int $postId Post id
      *
      * @return \Illuminate\Http\Response
      */
@@ -76,8 +81,9 @@ class PostController extends Controller
     /**
      * Update post.
      *
-     * @param  CreatePostRequest  $request request
-     * 
+     * @param CreatePostRequest $request request
+     * @param int               $postId  Post id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdatePostRequest $request, int $postId)
@@ -92,8 +98,8 @@ class PostController extends Controller
     /**
      * Destroy post.
      *
-     * @param  int $postId Post id
-     * 
+     * @param int $postId Post id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $postId)
