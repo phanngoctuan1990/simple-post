@@ -17,6 +17,12 @@ jobs:
       # - image: circleci/mysql:5.7-ram
       # 
       # - image: redis:3
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+        environment:
+          - cluster.name: elasticsearch
+          - transport.host: localhost
+          - network.host: 127.0.0.1
+          - http.port: 9200
 
     steps:
       - checkout
@@ -41,6 +47,7 @@ jobs:
 
       # run tests with phpunit or codecept
       #- run: ./vendor/bin/phpunit
+
       # check convention code with phpcs and phpmd
       - run: ./vendor/bin/phpcs
       - run: ./vendor/bin/phpmd app text phpmd.xml
