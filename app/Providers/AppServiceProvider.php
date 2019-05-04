@@ -23,6 +23,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Logging after send Mail
+        \Queue::after(function (JobProcessed $event) {
+            \Log::info("Queue completed" . ($event->connectionName) . '/n' . json_encode($event->data));
+        });
+
+        \Queue::before(function (JobProcessing $event) {
+            \Log::info("Connection name:" . $event->connectionName);
+        });
     }
 }
