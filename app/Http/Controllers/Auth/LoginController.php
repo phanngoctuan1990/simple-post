@@ -50,7 +50,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         $request = $request;
-        \Notification::send($user, new Authenticated());
+        \Notification::send($user, (new Authenticated())->delay(30));
         // \Notification::route('mail', 'datamini01@gmail.com')
         //     ->route('nexmo', '5555555555')
         //     ->notify(new Authenticated());

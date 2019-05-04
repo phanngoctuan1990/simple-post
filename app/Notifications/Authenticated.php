@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\SlackMessage;
 
-class Authenticated extends Notification
+class Authenticated extends Notification implements ShouldQueue
 {
     use Queueable;
 
