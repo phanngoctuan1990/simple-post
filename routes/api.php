@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:api'], 'namespace' => 'Api\V1'], function () {
+    Route::get('users', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::resource('posts', 'PostController')->only(['index']);
 });

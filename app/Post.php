@@ -31,4 +31,14 @@ class Post extends Model
         }
         return self::IMAGE_DEFAULT;
     }
+
+    /**
+     * Get the author of the post.
+     *
+     * @return relation
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

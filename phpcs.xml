@@ -4,6 +4,7 @@
     <rule ref="PSR2"/>
     
     <file>app</file>
+    <file>routes</file>
     <file>resources</file>
 
     <exclude-pattern>vendor</exclude-pattern>

@@ -1,2 +1,2 @@
 export const clientId = 2
-export const clientSecret = 'N7h3JR0cvSD2H27cgBAhmV47Sujtbb5d9821V2W0'
+export const clientSecret = 'qQZ9RcNYs2j3BoNS3sf5Rt0qrPCO8m5CA9foHLV6'

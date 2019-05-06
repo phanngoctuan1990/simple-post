@@ -2,11 +2,11 @@ import axios from '../config/axios'
 import {clientId, clientSecret} from '../config/env'
 
 const postData = {
-    grant_type: 'password',
-    client_id: clientId,
-    client_secret: clientSecret,
     username: '',
     password: '',
+    client_id: clientId,
+    grant_type: 'password',
+    client_secret: clientSecret,
 }
 
 export default {
@@ -21,6 +21,6 @@ export default {
     getUser() {
         const tokenData = JSON.parse(window.localStorage.getItem('authUser'))
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + tokenData.access_token
-        return axios.get('/api/user')
+        return axios.get('/api/v1/users')
     }
 }
