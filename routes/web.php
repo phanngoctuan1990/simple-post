@@ -11,12 +11,6 @@
 |
 */
 
-Route::get('/', function () {
+Route::any('{all}', function () {
     return view('welcome');
-});
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::middleware('auth')->resource('/posts', 'PostController');
+})->where(['all' => '.*']);

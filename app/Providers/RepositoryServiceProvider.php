@@ -49,7 +49,7 @@ class RepositoryServiceProvider extends ServiceProvider
                 return ClientBuilder::create()
                     ->setHosts(config('services.search.hosts'))
                     ->setRetries(config('services.search.retries'))
-                    ->setLogger(ClientBuilder::defaultLogger(storage_path('logs/elastic.log')))
+                    // ->setLogger(ClientBuilder::defaultLogger(storage_path('logs/elastic.log')))
                     ->build();
             }
         );
