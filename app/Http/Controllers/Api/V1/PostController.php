@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreatePostRequest;
 
 class PostController extends Controller
 {
@@ -17,8 +18,6 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        \Log::info($request->all());
-
         $search = $request->search;
         $userId = auth()->user()->id;
         $page = $request->page ?? null;
@@ -40,9 +39,12 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        $request = $request;
+        $data = $request->only(['title', 'description']);
+        $data['user_id'] = auth()->user()->id;
+        $post = Post::create($data)->load('user');
+        return $post;
     }
 
     /**

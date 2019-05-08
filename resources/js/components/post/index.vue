@@ -10,7 +10,6 @@
                 label="Tìm kiếm"
                 single-line
                 hide-details
-                @input="filterSearch"
             ></v-text-field>
             <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
@@ -50,15 +49,14 @@
             :headers="headers"
             class="elevation-1"
             :total-items="totalItems"
-            :custom-sort="customSort"
             :pagination.sync="pagination"
         >
             <template v-slot:items="props">
             <td>{{ props.item.id }}</td>
-            <td class="text-xs-right">{{ props.item.title }}</td>
+            <td class="text-xs-right">{{ props.item.title | subString }}</td>
             <td class="text-xs-right">{{ props.item.user.name }}</td>
-            <td class="text-xs-right">{{ props.item.description }}</td>
-            <td class="text-xs-right">{{ props.item.created_at }}</td>
+            <td class="text-xs-right">{{ props.item.description | subString }}</td>
+            <td class="text-xs-right">{{ props.item.created_at | dateFormat }}</td>
             <td class="justify-center layout px-0">
                 <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
                 <v-icon small @click="deleteItem(props.item)">delete</v-icon>
@@ -69,7 +67,7 @@
             </template>
         </v-data-table>
         <div class="text-xs-center pt-2">
-            <v-pagination v-model="pagination.page" :length="pages()" :total-visible="pagination.visible" circle @input="onPageChange"></v-pagination>
+            <v-pagination v-model="pagination.page" :length="pages()" circle :total-visible="pagination.visible" @input="pageChange"></v-pagination>
         </div>
         <notify :message="message" :color="color" :show.sync="show"></notify>
     </div>
@@ -137,16 +135,14 @@ export default {
         pagination: {
             handler () {
                 this.initialize()
-            },
-            deep: true
+            }
+        },
+        search() {
+            this.initialize();
         },
         dialog (val) {
             val || this.close()
         }
-    },
-
-    mounted() {
-        this.initialize()
     },
 
     methods: {
@@ -160,11 +156,9 @@ export default {
                 descending: this.pagination.descending == false ? 'ASC' : 'DESC'
             }
             postApi.fetch(data).then(res => {
-                console.log(res);
                 this.posts = res.data.data
                 this.totalItems = res.data.total
-                this.pagination.page = res.data.current_page
-                this.loading = false
+                this.pages()
             })
             .catch(err => {
                 console.error(err)
@@ -172,6 +166,7 @@ export default {
                 this.color = 'error'
                 this.message = 'Lỗi khi lấy dữ liệu bài viết, làm phiền bạn làm mới lại trang.'
             })
+            .finally(() => this.loading = false)
         },
 
         editItem (item) {
@@ -197,50 +192,32 @@ export default {
             if (this.editedIndex > -1) {
                 Object.assign(this.posts[this.editedIndex], this.editedItem)
             } else {
-                this.posts.push(this.editedItem)
+                postApi.store(this.editedItem).then(res => {
+                    this.posts.push(res.data)
+                    this.show = true
+                    this.color = 'success'
+                    this.message = 'Tạo mới bài viết thành công.'
+                })
+                .catch(err => {
+                    console.error(err)
+                    this.show = true
+                    this.color = 'error'
+                    this.message = 'Lỗi tạo mới bài viết, vui lòng thử lại.'
+                })
             }
             this.close()
         },
 
+        pageChange() {
+            this.initialize()
+        },
+
         pages () {
             if (this.pagination.rowsPerPage == null ||
-                this.totalItems == null
+            this.totalItems == null
             ) return 0
 
             return Math.ceil(this.totalItems / this.pagination.rowsPerPage)
-        },
-
-        onPageChange() {
-            this.initialize();
-        },
-
-        customSort(items, index, isDesc) {
-            items.sort((a, b) => {
-                if (index === "date") {
-                if (!isDesc) {
-                    return dateHelp.compare(a.date, b.date);
-                } else {
-                    return dateHelp.compare(b.date, a.date);
-                }
-                } else {
-                if (!isDesc) {
-                    return a[index] < b[index] ? -1 : 1;
-                } else {
-                    return b[index] < a[index] ? -1 : 1;
-                }
-                }
-            });
-            return items;
-        },
-
-        filterSearch(val) {
-            this.pagination.page = 1
-            if (this.pagination.descending) {
-                this.pagination.descending = false
-            } else {
-                this.pagination.descending = true
-            }
-            this.initialize()
         }
     }
 }

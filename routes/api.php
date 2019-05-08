@@ -18,5 +18,5 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api'], 'namespace' => 'Ap
         return $request->user();
     });
 
-    Route::resource('posts', 'PostController')->only(['index']);
+    Route::resource('posts', 'PostController')->only(['index', 'store']);
 });
